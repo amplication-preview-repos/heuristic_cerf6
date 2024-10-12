@@ -1,0 +1,65 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  createdAt DateTime @default(now())
+  email     String?  @unique
+  firstName String?
+  id        String   @id @default(cuid())
+  lastName  String?
+  password  String
+  roles     Json
+  updatedAt DateTime @updatedAt
+  username  String   @unique
+}
+
+model Category {
+  createdAt DateTime  @default(now())
+  id        String    @id @default(cuid())
+  name      String?
+  projects  Project[]
+  updatedAt DateTime  @updatedAt
+}
+
+model Project {
+  category    Category? @relation(fields: [categoryId], references: [id])
+  categoryId  String?
+  createdAt   DateTime  @default(now())
+  description String?
+  id          String    @id @default(cuid())
+  image       Json?
+  projectName String?
+  updatedAt   DateTime  @updatedAt
+}
+
+model CalendarEvent {
+  appointments Appointment[]
+  createdAt    DateTime      @default(now())
+  eventDate    DateTime?
+  eventName    String?
+  id           String        @id @default(cuid())
+  updatedAt    DateTime      @updatedAt
+}
+
+model Appointment {
+  appointmentDate DateTime?
+  calendarEvent   CalendarEvent? @relation(fields: [calendarEventId], references: [id])
+  calendarEventId String?
+  createdAt       DateTime       @default(now())
+  id              String         @id @default(cuid())
+  updatedAt       DateTime       @updatedAt
+}
+
+model Payment {
+  amount      Float?
+  createdAt   DateTime  @default(now())
+  id          String    @id @default(cuid())
+  paymentDate DateTime?
+  updatedAt   DateTime  @updatedAt
+}
